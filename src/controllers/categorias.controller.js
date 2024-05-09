@@ -1,19 +1,18 @@
-import { db } from "../database/db.connection.js"
+import { createCategoriaService, getCategoriasService } from "../services/categorias.services.js"
 
 export async function getCategorias(req, res) {
     try {
-        const categorias = await db.query(`SELECT * FROM categorias;`)
-        res.send(categorias.rows)
+        const resultado = await getCategoriasService()
+        res.send(resultado)
     } catch (err) {
         res.status(500).send(err.message)
     }
 }
 
 export async function createCategoria(req, res) {
-    const { nome } = req.body
     try {
-        await db.query(`INSERT INTO categorias (nome) VALUES ($1);`, [nome])
-        res.sendStatus(201)
+        const resultado = await createCategoriaService(req.body)
+        res.status(201).send(resultado)
     } catch (err) {
         res.status(500).send(err.message)
     }
