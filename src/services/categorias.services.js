@@ -1,16 +1,11 @@
-import { db } from "../database/db.connection.js"
+import categoriasRepository from "../repositories/categorias.repository.js"
 
 export async function getCategoriasService() {
-    const categorias = await db.query(`SELECT * FROM categorias;`)
-    return categorias.rows
+    const resultado = await categoriasRepository.getCategorias()
+    return resultado
 }
 
 export async function createCategoriaService({ nome }) {
-    const categoria = await db.query(`
-        INSERT INTO categorias (nome) VALUES ($1) RETURNING id;
-    `, [nome])
-    return {
-        id: categoria.rows[0].id,
-        nome
-    }
+    const resultado = await categoriasRepository.createCategoria(nome)
+    return resultado
 }
