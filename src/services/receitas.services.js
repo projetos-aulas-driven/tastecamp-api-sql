@@ -1,3 +1,4 @@
+import { conflictError, maxCategoriesError, minCategoriesError } from "../errors/erros.js";
 import receitasRepository from "../repositories/receitas.repository.js";
 
 export async function getReceitasService() {
@@ -11,12 +12,12 @@ export async function getReceitaByIdService(id) {
 }
 
 export async function createReceitaService({ titulo, ingredientes, preparo, categorias }) {
-    if (categorias.length > 3) return null
+    if (categorias.length > 3) throw maxCategoriesError()
 
-    if (categorias.length < 1) return null
+    if (categorias.length < 1) throw minCategoriesError()
 
-    const conflito = await receitasRepository.getReceitaByTitulo()
-    if (conflito.rowCount !== 0) return null
+    const conflito = await receitasRepository.getReceitaByTitulo(titulo)
+    if (conflito.rowCount !== 0) throw conflictError("receita")
 
     await receitasRepository.createReceita(titulo, ingredientes, preparo, categorias)
 }

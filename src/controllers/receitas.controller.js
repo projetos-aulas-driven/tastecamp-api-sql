@@ -50,13 +50,16 @@ export async function getReceitaById(req, res) {
 export async function createReceita(req, res) {
     try {
         const resultado = await createReceitaService(req.body)
-
-        if (resultado === null) {
-            return res.status(400).send("Ocorreu um erro")
-        }
-
         res.status(201).send(resultado)
     } catch (err) {
+        if (err.type === "invalidCategory") {
+            return res.status(422).send(err.message)
+        }
+
+        if (err.type === "conflict") {
+            return res.status(409).send(err.message)
+        }
+        
         res.status(500).send(err.message)
     }
 }
